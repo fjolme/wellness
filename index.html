@@ -2,41 +2,129 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>wellness</title>
-    <link rel="stylesheet" href="css/style.css" media="screen" title="Style">
+    <title>Wellness</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="css/style.css" media="screen" title="style" charset="utf-8">
   </head>
   <body>
+    <script id="timelines-template" type="text/x-handlebars-template">
+      <section class="timelines">
+        {{#each timelines}}
+          {{#ifCond type 'date'}}
+            <article class="item {{type}}">
+              {{date}}
+            </article>
+          {{/ifCond}}
+          {{#ifCond type 'exercise'}}
+            <article class="item item-icon {{type}}">
+              {{message}}
+            </article>
+          {{/ifCond}}
+          {{#ifCond type 'comment'}}
+            <article class="item {{type}}">
+              {{message}}
+            </article>
+          {{/ifCond}}
+          {{#ifCond type 'remember'}}
+            <article class="item item-icon {{type}}">
+              {{message}}
+            </article>
+          {{/ifCond}}
+          {{#ifCond type 'note'}}
+            <article class="item {{type}}">
+              {{message}}
+            </article>
+          {{/ifCond}}
+          {{#ifCond type 'image'}}
+            <article class="item {{type}}">
+              <img src="{{src}}" />
+            </article>
+          {{/ifCond}}
+        {{/each}}
+      </section>
+    </script>
+
     <main>
-      <article>
-        <header>Only header</header>
-      </article>
-      <article>
-        <ul>
-          <li>a</li>
-        </ul>
-        <p>Only content</p>
-        <p>Only content 2</p>
-      </article>
-      <article>
-        <header>List of items</header>
-        <ul>
-          <li>one</li>
-          <li>two</li>
-          <li>three</li>
-        </ul>
-      </article>
-      <article>
-        <header>Header</header>
-        <p>This is a paragraph</p>
-        <ul>
-          <li>First item</li>
-          <li>Second item</li>
-        </ul>
-        <footer>Footer</footer>
-      </article>
-      <article>
-        <footer>Only Footer</footer>
-      </article>
+      <div id="timelines-placeholder"></div>
     </main>
+
+    <script type="text/javascript">
+
+      Handlebars.registerHelper('ifCond', function(v1, v2, options) {
+        if(v1 === v2) {
+          return options.fn(this);
+        }
+        return options.inverse(this);
+      });
+
+      function binding(template, placeholder, context) {
+        var theTemplateScript = $(template).html();
+        var theTemplate = Handlebars.compile(theTemplateScript);
+        var theCompiledHtml = theTemplate(context);
+        $(placeholder).replaceWith(theCompiledHtml);
+      }
+
+      $(function () {
+
+        var timelines = {
+          timelines: [
+            {
+              type: 'date',
+              date: '03 Octubre'
+            },
+            {
+              type: 'exercise',
+              message: '1 minuto de atención plena'
+            },
+            {
+              type: 'comment',
+              message: 'Enfoca toda tu atención en tu respiración durante un minuto'
+            },
+            {
+              type: 'comment',
+              message: 'Deja abiertos los ojos, respira con el vientre en lugar de con el pecho y trata de respirar por la nariz y que salga por la boca'
+            },
+            {
+              type: 'image',
+              src: 'images/mindfulness.png'
+            },
+            {
+              type: 'exercise',
+              message: 'Observación consciente'
+            },
+            {
+              type: 'date',
+              date: '05 Octubre'
+            },
+            {
+              type: 'exercise',
+              message: 'Juega con tu hijo'
+            },
+            {
+              type: 'date',
+              date: '10 Octubre'
+            },
+            {
+              type: 'remember',
+              message: 'Recuerda hacer los ejercicios'
+            },
+            {
+              type: 'date',
+              date: 'Hoy'
+            },
+            {
+              type: 'note',
+              message: 'Le gustan los ejercicios y pone mucho interés ellos. El objeto de la siguiente sesión será hacer participe a la familia en la realización de los ejercicios.'
+            }
+          ]
+        };
+
+        binding("#timelines-template", "#timelines-placeholder", timelines);
+
+      });
+
+    </script>
+
   </body>
 </html>
